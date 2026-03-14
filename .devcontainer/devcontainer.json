@@ -1,0 +1,17 @@
+{
+  "name": "SWE-bench Pro: instance_protonmail__webclients-708ed4a299711f0fa79a907cc5847cfd39c0fc71",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "anthropic.claude-code",
+        "openai.codex"
+      ]
+    }
+  }
+}
