@@ -1,0 +1,26 @@
+{
+  "name": "SWE-bench Pro: instance_gravitational__teleport-b5d8169fc0a5e43fee2616c905c6d32164654dc6",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "anthropic.claude-code",
+        "openai.codex"
+      ],
+      "settings": {
+        "files.exclude": {
+          ".swebench": true,
+          ".devcontainer": true,
+          ".github": true,
+          ".gitignore": true
+        }
+      }
+    }
+  }
+}
