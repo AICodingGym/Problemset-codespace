@@ -1,0 +1,26 @@
+{
+  "name": "SWE-bench Pro: instance_future-architect__vuls-bff6b7552370b55ff76d474860eead4ab5de785a-v1151a6325649aaf997cd541ebe533b53fddf1b07",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "anthropic.claude-code",
+        "openai.codex"
+      ],
+      "settings": {
+        "files.exclude": {
+          ".swebench": true,
+          ".devcontainer": true,
+          ".github": true,
+          ".gitignore": true
+        }
+      }
+    }
+  }
+}
