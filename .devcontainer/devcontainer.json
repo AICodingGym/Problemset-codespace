@@ -1,0 +1,26 @@
+{
+  "name": "SWE-bench Pro: instance_ansible__ansible-502270c804c33d3bc963930dc85e0f4ca359674d-v7eee2454f617569fd6889f2211f75bc02a35f9f8",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "anthropic.claude-code",
+        "openai.codex"
+      ],
+      "settings": {
+        "files.exclude": {
+          ".swebench": true,
+          ".devcontainer": true,
+          ".github": true,
+          ".gitignore": true
+        }
+      }
+    }
+  }
+}
