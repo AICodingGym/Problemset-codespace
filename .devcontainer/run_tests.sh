@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Ensure /app resolves to workspace root
+[ -e /app ] || ln -sf "$(pwd)" /app
+
+# Apply test files from gold patch (restored on exit)
+trap "git checkout HEAD -- openlibrary/tests/core/sample_amazon_record.py openlibrary/tests/core/test_vendors.py 2>/dev/null || true" EXIT
+git checkout 2fe532a33635aab7a9bfea5d977f6a72b280a30c -- openlibrary/tests/core/sample_amazon_record.py openlibrary/tests/core/test_vendors.py
+
+echo "=== Running tests ==="
+bash <(sed 's/\r//g' .swebench/run_script.sh) openlibrary/tests/core/sample_amazon_record.py,openlibrary/tests/core/test_vendors.py
