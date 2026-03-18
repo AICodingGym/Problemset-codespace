@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Ensure /app resolves to workspace root
+[ -e /app ] || ln -sf "$(pwd)" /app
+
+# Apply test files from gold patch (restored on exit)
+trap "git checkout HEAD -- config/os_test.go oval/util_test.go util/util_test.go 2>/dev/null || true" EXIT
+git checkout 6eff6a9329a65cc412e79b8f82444dfa3d0f0b5a -- config/os_test.go oval/util_test.go util/util_test.go
+
+echo "=== Running tests ==="
+bash <(sed 's/\r//g' .swebench/run_script.sh) TestEOL_IsStandardSupportEnded/Debian_9_supported,TestEOL_IsStandardSupportEnded/freebsd_11_supported,TestEOL_IsStandardSupportEnded/freebsd_11_eol_on_2021-9-30,TestEOL_IsStandardSupportEnded/CentOS_7_supported,TestEOL_IsStandardSupportEnded/Debian_10_supported,Test_major,TestEOL_IsStandardSupportEnded/Oracle_Linux_9_not_found,TestEOL_IsStandardSupportEnded/Ubuntu_12.10_not_found,TestEOL_IsStandardSupportEnded/CentOS_9_not_found,TestEOL_IsStandardSupportEnded/CentOS_8_supported,TestDistro_MajorVersion,TestEOL_IsStandardSupportEnded/amazon_linux_2_supported,TestSyslogConfValidate,TestEOL_IsStandardSupportEnded/Ubuntu_18.04_ext_supported,TestEOL_IsStandardSupportEnded/Ubuntu_21.04_supported,TestEOL_IsStandardSupportEnded/Debian_11_supported,TestEOL_IsStandardSupportEnded/freebsd_10_eol,TestPrependHTTPProxyEnv,TestEOL_IsStandardSupportEnded/Oracle_Linux_7_supported,TestEOL_IsStandardSupportEnded/RHEL7_supported,TestEOL_IsStandardSupportEnded/Debian_8_supported,TestTruncate,TestEOL_IsStandardSupportEnded,TestEOL_IsStandardSupportEnded/amazon_linux_1_eol_on_2023-6-30,TestEOL_IsStandardSupportEnded/Ubuntu_14.10_eol,TestEOL_IsStandardSupportEnded/Ubuntu_18.04_supported,TestEOL_IsStandardSupportEnded/Alpine_3.11_supported,TestEOL_IsStandardSupportEnded/RHEL9_not_found,TestEOL_IsStandardSupportEnded/amazon_linux_1_supported,TestEOL_IsStandardSupportEnded/RHEL6_eol,TestEOL_IsStandardSupportEnded/Debian_3.13_not_found,TestEOL_IsStandardSupportEnded/CentOS_6_eol,TestEOL_IsStandardSupportEnded/alpine_3.10_supported,TestEOL_IsStandardSupportEnded/Alpine_3.12_supported,TestEOL_IsStandardSupportEnded/RHEL8_supported,TestEOL_IsStandardSupportEnded/Oracle_Linux_8_supported,TestUrlJoin,TestEOL_IsStandardSupportEnded/Debian_3.9_eol,TestEOL_IsStandardSupportEnded/freebsd_12_supported,TestEOL_IsStandardSupportEnded/Ubuntu_14.04_eol,TestToCpeURI,TestEOL_IsStandardSupportEnded/Ubuntu_16.04_supported,TestEOL_IsStandardSupportEnded/Oracle_Linux_6_eol
