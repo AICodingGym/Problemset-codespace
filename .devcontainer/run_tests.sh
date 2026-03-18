@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Ensure /app resolves to workspace root
+[ -e /app ] || ln -sf "$(pwd)" /app
+
+# Apply test files from gold patch (restored on exit)
+trap "git checkout HEAD -- internal/config/config_test.go internal/server/audit/audit_test.go internal/server/auth/server_test.go internal/server/middleware/grpc/middleware_test.go internal/server/middleware/grpc/support_test.go 2>/dev/null || true" EXIT
+git checkout e50808c03e4b9d25a6a78af9c61a3b1616ea356b -- internal/config/config_test.go internal/server/audit/audit_test.go internal/server/auth/server_test.go internal/server/middleware/grpc/middleware_test.go internal/server/middleware/grpc/support_test.go
+
+echo "=== Running tests ==="
+bash <(sed 's/\r//g' .swebench/run_script.sh) TestAuditUnaryInterceptor_CreateFlag,TestCacheUnaryInterceptor_UpdateVariant,TestValidationUnaryInterceptor,TestTracingExporter,TestAuditUnaryInterceptor_DeleteConstraint,TestJSONSchema,TestAuditUnaryInterceptor_UpdateConstraint,TestAuditUnaryInterceptor_UpdateRule,TestAuditUnaryInterceptor_UpdateNamespace,TestAuditUnaryInterceptor_CreateNamespace,TestAuditUnaryInterceptor_DeleteVariant,TestAuditUnaryInterceptor_UpdateSegment,TestCacheUnaryInterceptor_GetFlag,TestAuditUnaryInterceptor_CreateVariant,TestAuditUnaryInterceptor_CreateConstraint,TestErrorUnaryInterceptor,TestSinkSpanExporter,TestServeHTTP,Test_mustBindEnv,TestEvaluationUnaryInterceptor_BatchEvaluation,TestScheme,TestAuditUnaryInterceptor_DeleteFlag,TestAuditUnaryInterceptor_DeleteNamespace,TestLoad,TestCacheUnaryInterceptor_DeleteFlag,TestAuditUnaryInterceptor_DeleteDistribution,TestAuditUnaryInterceptor_CreateSegment,TestEvaluationUnaryInterceptor_Noop,TestAuditUnaryInterceptor_DeleteRule,TestCacheUnaryInterceptor_DeleteVariant,TestAuditUnaryInterceptor_DeleteSegment,TestEvaluationUnaryInterceptor_Evaluation,TestAuditUnaryInterceptor_CreateRule,TestAuditUnaryInterceptor_UpdateDistribution,TestLogEncoding,TestAuditUnaryInterceptor_CreateDistribution,TestCacheBackend,TestCacheUnaryInterceptor_UpdateFlag,TestCacheUnaryInterceptor_Evaluate,TestAuditUnaryInterceptor_UpdateVariant,TestDatabaseProtocol,TestCacheUnaryInterceptor_CreateVariant,TestAuditUnaryInterceptor_UpdateFlag
