@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Ensure /app resolves to workspace root
+[ -e /app ] || ln -sf "$(pwd)" /app
+
+# Apply test files from gold patch (restored on exit)
+trap "git checkout HEAD -- tool/tsh/tsh_test.go 2>/dev/null || true" EXIT
+git checkout 10123c046e21e1826098e485a4c2212865a49d9f -- tool/tsh/tsh_test.go
+
+echo "=== Running tests ==="
+bash <(sed 's/\r//g' .swebench/run_script.sh) TestFormatConnectCommand/default_user/database_are_specified,TestTshMain,TestFormatConnectCommand,TestFormatConnectCommand/default_user_is_specified,TestFormatConnectCommand/unsupported_database_protocol,TestReadClusterFlag,TestFormatConnectCommand/no_default_user/database_are_specified,TestFormatConnectCommand/default_database_is_specified,TestReadClusterFlag/TELEPORT_CLUSTER_set,TestReadClusterFlag/TELEPORT_SITE_and_TELEPORT_CLUSTER_set,_prefer_TELEPORT_CLUSTER,TestReadClusterFlag/TELEPORT_SITE_and_TELEPORT_CLUSTER_and_CLI_flag_is_set,_prefer_CLI,TestReadClusterFlag/TELEPORT_SITE_set,TestFetchDatabaseCreds,TestReadClusterFlag/nothing_set
