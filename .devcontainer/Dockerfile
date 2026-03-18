@@ -1,20 +1,27 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.148.1/containers/go/.devcontainer/base.Dockerfile
+# Auto-generated devcontainer Dockerfile for native test execution
+FROM golang:1.24
 
-# [Choice] Go version: 1, 1.15, 1.14
-ARG VARIANT="1"
-FROM mcr.microsoft.com/vscode/devcontainers/go:${VARIANT}
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    pkg-config \
+    build-essential \
+    cmake \
+    g++ \
+    zlib1g-dev \
+    libutfcpp-dev \
+    python3 \
+    python3-pip \
+    python3-setuptools \
+    python-is-python3 \
+    && rm -rf /var/lib/apt/lists/*
 
-# [Option] Install Node.js
-ARG INSTALL_NODE="true"
-ARG NODE_VERSION="lts/*"
-RUN if [ "${INSTALL_NODE}" = "true" ]; then su vscode -c "source /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
+# Environment variables
+ENV PYTEST_ADDOPTS="--tb=short -v --continue-on-collection-errors --reruns=3"
+ENV UV_HTTP_TIMEOUT=60
 
-# [Optional] Uncomment this section to install additional OS packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends libtag1-dev ffmpeg
+# Install AI coding CLI tools
+RUN (command -v npm && npm install -g @anthropic-ai/claude-code @openai/codex) || true
+RUN pip install aicodinggym-cli || true
 
-# [Optional] Uncomment the next line to use go get to install anything else you need
-# RUN go get -x <your-dependency-or-tool>
-
-# [Optional] Uncomment this line to install global node packages.
-# RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
