@@ -1,49 +1,23 @@
-ARG GO_VERSION=1.21
+# Auto-generated devcontainer Dockerfile for native test execution
+FROM golang:1.24
 
-FROM golang:${GO_VERSION}
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    bash \
+    build-essential \
+    python3 \
+    python3-pip \
+    python3-setuptools \
+    python-is-python3 \
+    perl \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && \
-    apt-get -y install --no-install-recommends \
-    curl \
-    gnupg \
-    sudo \
-    openssh-server \
-    postgresql-client && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Environment variables
+ENV PYTEST_ADDOPTS="--tb=short -v --continue-on-collection-errors --reruns=3"
+ENV UV_HTTP_TIMEOUT=60
 
-# install nodejs
-RUN curl -sSL https://deb.nodesource.com/setup_18.x | bash && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    nodejs && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Install AI coding CLI tools
+RUN (command -v npm && npm install -g @anthropic-ai/claude-code @openai/codex) || true
+RUN pip install aicodinggym-cli || true
 
-RUN git config --global --add safe.directory '*'
-
-# install mage
-RUN git clone https://github.com/magefile/mage && \
-    cd mage && \
-    go run bootstrap.go
-
-WORKDIR /flipt
-
-COPY go.mod go.mod
-COPY go.sum go.sum
-COPY ./errors ./errors
-COPY ./rpc/flipt ./rpc/flipt
-COPY ./sdk ./sdk
-
-RUN go mod download -x
-
-COPY . .
-
-ENV GOPATH=/workspace/go \
-    PATH=/workspace/go/bin:$PATH
-
-# set the sqlite DB path to the user's home because of potential permission issues
-ENV FLIPT_DB_URL=file:$HOME/flipt/flipt.db
-
-EXPOSE 8080
-EXPOSE 9000
