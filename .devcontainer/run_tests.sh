@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Ensure /app resolves to workspace root
+[ -e /app ] || ln -sf "$(pwd)" /app
+
+# Apply test files from gold patch (restored on exit)
+trap "git checkout HEAD -- cmd/flipt/config_test.go 2>/dev/null || true" EXIT
+git checkout 406f9396ad65696d58865b3a6283109cd4eaf40e -- cmd/flipt/config_test.go
+
+echo "=== Running tests ==="
+bash <(sed 's/\r//g' .swebench/run_script.sh) TestValidate,TestInfoServeHTTP,TestConfigServeHTTP,TestConfigure
