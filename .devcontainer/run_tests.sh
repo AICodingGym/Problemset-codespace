@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Ensure /app resolves to workspace root
+[ -e /app ] || ln -sf "$(pwd)" /app
+
+# Apply test files from gold patch (restored on exit)
+trap "git checkout HEAD -- models/scanresults_test.go models/vulninfos_test.go 2>/dev/null || true" EXIT
+git checkout 54e73c2f5466ef5daec3fb30922b9ac654e4ed25 -- models/scanresults_test.go models/vulninfos_test.go
+
+echo "=== Running tests ==="
+bash <(sed 's/\r//g' .swebench/run_script.sh) TestVulnInfo_AttackVector/3.0:N,TestFindByBinName,TestMaxCvss2Scores,TestVulnInfo_AttackVector/3.1:N,TestVulnInfos_FilterByCvssOver/over_high,TestSourceLinks,TestLibraryScanners_Find/miss,TestDistroAdvisories_AppendIfMissing/append,TestVulnInfos_FilterIgnoreCves,TestSummaries,Test_parseListenPorts/normal,TestVulnInfos_FilterUnfixed,TestLibraryScanners_Find/multi_file,TestVulnInfo_AttackVector/2.0:L,TestCvss3Scores,TestPackage_FormatVersionFromTo/fixed,TestMaxCvss3Scores,TestExcept,TestVulnInfos_FilterIgnorePkgs/filter_pkgs_2,TestCountGroupBySeverity,TestCvss2Scores,TestFormatMaxCvssScore,TestVulnInfos_FilterIgnorePkgs,Test_IsRaspbianPackage/verRegExp,TestVulnInfos_FilterByCvssOver/over_7.0,TestDistroAdvisories_AppendIfMissing/duplicate_no_append,TestPackage_FormatVersionFromTo/nfy3,Test_IsRaspbianPackage/debianPackage,Test_IsRaspbianPackage/nameList,TestAddBinaryName,Test_parseListenPorts/ipv6_loopback,TestIsDisplayUpdatableNum,TestTitles,TestPackage_FormatVersionFromTo/nfy2,Test_parseListenPorts/asterisk,TestVulnInfo_AttackVector/2.0:A,TestVulnInfos_FilterUnfixed/filter_ok,Test_parseListenPorts,TestAppendIfMissing,TestMergeNewVersion,TestMerge,TestVulnInfo_AttackVector,Test_parseListenPorts/empty,TestVulnInfos_FilterByCvssOver,TestVulnInfos_FilterIgnorePkgs/filter_pkgs_3,TestPackage_FormatVersionFromTo/nfy,TestStorePackageStatuses,TestVulnInfo_AttackVector/2.0:N,TestVulnInfos_FilterIgnorePkgs/filter_pkgs_1,TestPackage_FormatVersionFromTo,Test_IsRaspbianPackage,TestVulnInfos_FilterIgnoreCves/filter_ignored,TestLibraryScanners_Find,TestLibraryScanners_Find/single_file,TestSortByConfident,Test_IsRaspbianPackage/nameRegExp,TestPackage_FormatVersionFromTo/nfy#01,TestToSortedSlice,TestSortPackageStatues,TestMaxCvssScores,TestDistroAdvisories_AppendIfMissing
