@@ -1,0 +1,25 @@
+#!/bin/bash
+set -euo pipefail
+
+# Environment variables from test_patch.yml
+export INSTANCE_ID=pytest-dev__pytest-6202
+export REPO=pytest-dev/pytest
+export VERSION=5.2
+export BASE_COMMIT=3a668ea6ff24b0c8f00498c3144c63bac561d925
+export ENV_SETUP_COMMIT=f36ea240fe3579f945bf5d6cc41b5e45a572249d
+export TEST_CMD='pytest -rA'
+export TEST_FILES=testing/test_collection.py
+export CONDA_ENV=testbed
+export REPO_ROOT="$(pwd)"
+
+source "$(conda info --base)/etc/profile.d/conda.sh" || { echo "ERROR: conda not found — run setup.sh first"; exit 1; }
+conda activate "$CONDA_ENV" || { echo "ERROR: conda env $CONDA_ENV not found — run setup.sh first"; exit 1; }
+
+echo "=== Running tests ==="
+if echo "$TEST_CMD" | grep -q "runtests.py"; then
+    # Django runtests.py requires dotted module names, not file paths
+    MODULES=$(python3 -c 'import sys,re; print(" ".join(re.sub(r"\.py$","",re.sub(r"^tests/","",f)).replace("/",".") for f in sys.argv[1].split()))' "$TEST_FILES")
+    $TEST_CMD $MODULES
+else
+    $TEST_CMD $TEST_FILES
+fi
